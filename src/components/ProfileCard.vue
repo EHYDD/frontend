@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <div v-if="isMinimized == 'false'" class="group pb-5">
-    <div class="rounded-2xl bg-zinc-800 p-5 group-hover:bg-zinc-700">
+    <div class="rounded-2xl bg-[#202020] p-5 group-hover:bg-zinc-800">
       <div class="flex justify-between">
         <div class="flex items-center">
           <!-- PROFILE PIC -->

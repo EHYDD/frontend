@@ -57,7 +57,7 @@ function toggleSidePanel() {
           <ProfileCard isMinimized="false" />
 
           <!-- Light/Dark Mode -->
-          <LightDarkMode isLightMode="true" isMinimized="false" />
+          <LightDarkMode isLightMode="false" isMinimized="false" />
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@ function toggleSidePanel() {
 
     <!-- MAIN PANEL -->
     <div class="w-full h-[97vh] overflow-hidden">
-      <div class="w-full h-full bg-zinc-800 rounded-3xl overflow-clip">
+      <div class="w-full h-full bg-[#202020] rounded-3xl overflow-clip">
         <RouterView />
       </div>
     </div>

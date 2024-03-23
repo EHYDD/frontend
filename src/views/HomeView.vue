@@ -1,9 +1,7 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
+<script setup></script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="w-full h-full p-10">
+    <span> Welcome to EHYDD! </span>
+  </div>
 </template>

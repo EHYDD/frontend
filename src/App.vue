@@ -1,40 +1,108 @@
 <script setup>
-import { ListMinus, ArrowLeftFromLine } from 'lucide-vue-next'
+import { ListMinus, ArrowLeftFromLine, ArrowRightFromLine } from 'lucide-vue-next'
+import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue'
+
 import SideBarTabs from './components/SideBarTabs.vue'
 import ProfileCard from './components/ProfileCard.vue'
+import LightDarkMode from './components/LightDarkMode.vue'
+
+const hideSidePanel = ref(false)
+let isSidePanelHidden = false
+function toggleSidePanel() {
+  isSidePanelHidden = !isSidePanelHidden
+  hideSidePanel.value = isSidePanelHidden
+}
 </script>
 
 <template>
   <div class="flex p-5 text-white">
-    <div class="w-1/5 h-[97vh] pr-5">
+    <!-- SIDE PANEL -->
+    <div v-if="hideSidePanel" class="w-1/5 h-[97vh] pr-5">
       <!-- NAME -->
       <div class="flex justify-between items-center">
-        <div class="flex">
-          <ListMinus :size="28" />
-          <span class="font-bold text-2xl pl-4"> EHYDD </span>
-        </div>
-        <ArrowLeftFromLine class="text-zinc-700 hover:text-zinc-400" :size="20" />
+        <!-- LOGO AND HOME -->
+        <RouterLink to="/">
+          <div class="flex">
+            <ListMinus :size="28" />
+            <span class="font-bold text-2xl pl-4"> EHYDD </span>
+          </div>
+        </RouterLink>
+        <!-- MINIMIZE SIDE PANEL -->
+        <ArrowLeftFromLine
+          @click="toggleSidePanel"
+          class="text-zinc-700 hover:text-zinc-400"
+          :size="20"
+        />
       </div>
 
       <!-- TABS AND PROFILE -->
       <div class="h-[92vh] flex flex-col justify-between">
         <!-- TABS -->
         <div class="py-10">
-          <SideBarTabs label="Chat" />
-          <SideBarTabs label="Grades" />
+          <RouterLink to="/chat">
+            <SideBarTabs label="Chat" />
+          </RouterLink>
+          <RouterLink to="/grades">
+            <SideBarTabs label="Grades" />
+          </RouterLink>
+
           <SideBarTabs label="Insights" />
           <SideBarTabs label="Settings" />
           <SideBarTabs label="Help" />
         </div>
 
-        <!-- Profile -->
-        <ProfileCard />
+        <div>
+          <!-- Profile -->
+          <ProfileCard isMinimized="false" />
+
+          <!-- Light/Dark Mode -->
+          <LightDarkMode isLightMode="true" isMinimized="false" />
+        </div>
       </div>
     </div>
 
-    <div class="w-full h-[97vh]">
-      <div class="w-full h-full bg-slate-800 rounded-3xl">
-        <span class="font-bold text-blue-600"> There </span>
+    <!-- HIDDEN SIDE PANEL -->
+    <div v-else class="pr-5">
+      <!-- MAXIMIZE SIDE PANEL -->
+      <div class="pl-5 pt-4">
+        <ArrowRightFromLine
+          @click="toggleSidePanel"
+          class="text-zinc-700 hover:text-zinc-400"
+          :size="20"
+        />
+      </div>
+
+      <!-- TABS AND PROFILE -->
+      <div class="h-[92vh] flex flex-col justify-between">
+        <!-- TABS -->
+        <div class="py-10">
+          <RouterLink to="/chat">
+            <SideBarTabs label="Chat" labelHidden="true" />
+          </RouterLink>
+          <RouterLink to="/grades">
+            <SideBarTabs label="Grades" labelHidden="true" />
+          </RouterLink>
+
+          <SideBarTabs label="Insights" labelHidden="true" />
+          <SideBarTabs label="Settings" labelHidden="true" />
+          <SideBarTabs label="Help" labelHidden="true" />
+        </div>
+
+        <div>
+          <!-- Profile -->
+          <ProfileCard isMinimized="true" />
+
+          <!-- Light/Dark Mode -->
+          <LightDarkMode isLightMode="true" isMinimized="true" />
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="w-full h-[97vh] overflow-hidden">
+      <div class="w-full h-full bg-zinc-800 rounded-3xl overflow-clip">
+        <RouterView />
       </div>
     </div>
   </div>

@@ -1,23 +1,55 @@
 <script setup>
 import { Send } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { OpenAI } from 'openai'
+import VueMarkdown from 'vue-markdown-render'
 
 const userInput = ref({ role: 'user', content: '' })
-const conversation = ref([])
+const conversation = reactive([])
 
 function getUserInput() {
   userInput.value.content = document.getElementById('userInput').value
   // console.log(userInput.value.content)
 }
 
-function sendUserInputToAI() {
+async function sendUserInputToAI() {
   // GET USER INPUT
-  var newUserInput = {
+  var newUserInput = ref({
     role: 'user',
     content: document.getElementById('userInput').value.toString()
-  }
-  conversation.value.push(newUserInput)
+  })
+  conversation.push(newUserInput)
   document.getElementById('userInput').value = ''
+  console.log(newUserInput.value.content)
+
+  // SEND TO AI
+  let newAIOutput = ref({
+    role: 'AI',
+    content: ''
+  })
+  conversation.push(newAIOutput)
+
+  let openAI = new OpenAI({
+    baseURL: 'http://localhost:1234/v1',
+    apiKey: 'myapikey',
+    dangerouslyAllowBrowser: true
+  })
+
+  let aiResponse = await openAI.chat.completions.create({
+    model: 'local-model',
+    messages: [
+      { role: 'system', content: 'Always reply short and precisely using a few words only!' },
+      { role: 'user', content: newUserInput.value.content.toString().trim() }
+    ],
+    stream: true
+  })
+  let curRes = ''
+  for await (const chunk of aiResponse) {
+    curRes += chunk.choices[0]?.delta?.content || ''
+    newAIOutput.value.content += chunk.choices[0]?.delta?.content || ''
+    // console.log(chunk.choices[0]?.delta?.content)
+  }
+  console.log(curRes)
 }
 </script>
 
@@ -30,12 +62,28 @@ function sendUserInputToAI() {
       </div>
       <div class="p-5">
         <!-- CHATS -->
-        <div class="bg-[#181818] rounded-2xl h-[82vh] p-5">
+        <div class="bg-[#181818] rounded-2xl h-[82vh] p-5 overflow-scroll">
           <!-- EACH MESSAGE -->
-
-          <div v-for="messages in conversation" :key="messages.content" class="py-2">
-            <div class="bg-zinc-800 rounded-full py-2 px-6">
-              {{ messages.content }}
+          <div v-if="conversation.length == 0">
+            <span class="text-zinc-500">
+              Say Hello to start chatting with your personal assistant...
+            </span>
+          </div>
+          <div v-else>
+            <div v-for="messages in conversation" :key="messages.content" class="py-2">
+              <div
+                v-if="messages.value.role == 'user'"
+                class="bg-cyan-500 text-black font-bold rounded-full py-2 px-6"
+              >
+                {{ messages.value.content }}
+              </div>
+              <div v-else class="bg-green-500 text-black font-bold rounded-3xl pt-2 pl-4 py-1 px-3">
+                <!-- {{ messages.value.content }} -->
+                <vue-markdown
+                  :source="messages.value.content"
+                  :option="{ typographer: true, hightlight: true }"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -78,4 +126,17 @@ function sendUserInputToAI() {
   </div>
 </template>
 
-<style></style>
+<style>
+p {
+  font-weight: bold;
+}
+pre {
+  background-color: #181818;
+  border-radius: 12px;
+  color: white;
+  padding: 16px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  overflow-x: scroll;
+}
+</style>

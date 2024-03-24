@@ -7,8 +7,8 @@ import SideBarTabs from './components/SideBarTabs.vue'
 import ProfileCard from './components/ProfileCard.vue'
 import LightDarkMode from './components/LightDarkMode.vue'
 
-const hideSidePanel = ref(false)
-let isSidePanelHidden = false
+const hideSidePanel = ref(true)
+let isSidePanelHidden = true
 function toggleSidePanel() {
   isSidePanelHidden = !isSidePanelHidden
   hideSidePanel.value = isSidePanelHidden

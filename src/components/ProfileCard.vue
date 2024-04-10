@@ -38,9 +38,10 @@ defineProps({
       <!-- SIGNOUT BUTTON -->
       <div class="pt-5">
         <div
-          class="rounded-xl border border-zinc-600 py-1 pb-2 text-center group-hover:border-zinc-500 hover:bg-blue-500"
+          class=" py-1 pb-2 text-center"
         >
-          <span class="text-lg uppercase"> Sign Out </span>
+          <!-- <span class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700"> Sign Out </span> -->
+          <router-link to="/login" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">Sign Out</router-link>
         </div>
       </div>
     </div>
